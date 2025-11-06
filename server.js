@@ -5,6 +5,7 @@ import http from "node:http";
 import { getDataFromDB } from "./database/db.js";
 import { JSONresponse } from "./utils/sendJSONresponse.js";
 import { bd } from "./data/data.js";
+import { filterByContinent, filterByCountry } from "./utils/getdataByPathParams.js";
 
 // Define the port number for the server
 const PORT = 8000;
@@ -25,25 +26,16 @@ const server = http.createServer(async (req, res) => {
     // Extract the continent name from the URL
     const continent = req.url.split("/").pop();
 
-    // Filter destinations by the specified continent (case-insensitive)
-    const filteredData = destinations.filter((dest) => {
-      return dest.continent.toLowerCase() === continent.toLowerCase();
-    });
     // Send the filtered data as JSON response
-    JSONresponse(res, 200, filteredData);
+    JSONresponse(res, 200, filterByContinent(destinations, continent));
 
   } else if (req.url.startsWith("/api/country") && req.method === "GET") {
 
     // Extract the country name from the URL
     const country = req.url.split("/").pop();
 
-    // Filter destinations by the specified country (case-insensitive)
-    const filteredData = destinations.filter((dest) => {
-      return dest.country.toLowerCase() === country.toLowerCase();
-    });
-
     // Send the filtered data as JSON response
-    JSONresponse(res, 200, filteredData);
+    JSONresponse(res, 200, filterByCountry(destinations, country));
 
   }
   // Handle all other routes
@@ -51,7 +43,7 @@ const server = http.createServer(async (req, res) => {
 
     // Send a 404 response with default data
     JSONresponse(res, 404, bd);
-    
+
   }
 });
 
