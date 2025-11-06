@@ -26,7 +26,17 @@ const server =  http.createServer(async (req, res)=> {
 
         // Send the destinations data as the response
         res.end(`${destinations}`);
+    }else{
+
+        res.setHeader('ContentType', 'application/json')
+
+        // error or bad request
+        res.statusCode = 404
+
+        res.end(JSON.stringify({error: "not found", message: "The requested route does not exist"}))
+
     }
+
 
 })
 
