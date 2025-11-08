@@ -6,20 +6,30 @@ import { getDataFromDB } from "./database/db.js";
 import { JSONresponse } from "./utils/sendJSONresponse.js";
 import { bd } from "./data/data.js";
 import { filterByContinent, filterByCountry } from "./utils/getdataByPathParams.js";
+import getfilteredData from "./utils/getfiltereddataByparams.js";
 
 // Define the port number for the server
 const PORT = 8000;
 
 // Create an HTTP server
 const server = http.createServer(async (req, res) => {
+
+  const urlObj = new URL(req.url, `http://${req.headers.host}`)
+
+  const queryObj = Object.fromEntries(urlObj.searchParams)
+
+
   // Fetch destinations data from the database
   let destinations = await getDataFromDB();
 
   // Handle GET requests to the '/api' endpoint
-  if (req.url === "/api" && req.method === "GET") {
+  if (urlObj.pathname === "/api" && req.method === "GET") {
+
+    let filteredData = getfilteredData(destinations, queryObj)
+
 
     // Send all destinations as JSON response
-    JSONresponse(res, 200, destinations);
+    JSONresponse(res, 200, filteredData);
 
   } else if (req.url.startsWith("/api/continent") && req.method === "GET") {
 
