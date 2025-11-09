@@ -9,7 +9,7 @@ export const filterByCountry = (data, country)=>{
     })
 } 
 export const filterByisopentoPub = (data, isOpen)=>{
-    if(isOpen==="true"){
+    if(isOpen){
         return data.filter((d)=>{
             return d.is_open_to_public === true
         })
